@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 
+
 app.set('view engine', 'ejs');
 app.use("/public", express.static(__dirname + "/public"));
 
@@ -29,8 +30,8 @@ app.get("/luck", (req, res) => {
 
 app.get("/janken", (req, res) => {
   let hand = req.query.hand;
-  let win = Number( req.query.win );
-  let total = Number( req.query.total );
+  let win = Number( req.query.win )||0;
+  let total = Number( req.query.total )||0;
   console.log( {hand, win, total});
   const num = Math.floor( Math.random() * 3 + 1 );
   let cpu = '';
@@ -39,8 +40,11 @@ app.get("/janken", (req, res) => {
   else cpu = 'パー';
   // ここに勝敗の判定を入れる
   let judgement;
-  if (hand === cpu) {
+  if(hand == undefined){
+    judgement = '';
+  } else if (hand === cpu) {
     judgement = '引き分け'; 
+    total += 1;
   } else if (
     (hand === 'グー' && cpu === 'チョキ') ||
     (hand === 'チョキ' && cpu === 'パー') ||
@@ -48,11 +52,13 @@ app.get("/janken", (req, res) => {
   ) {
     judgement = '勝ち'; 
     win += 1;
+    total += 1;
   } else {
     judgement = '負け'; 
+    total += 1;
   }
 
-  total += 1;
+  
   const display = {
     your: hand,
     cpu: cpu,
@@ -62,5 +68,42 @@ app.get("/janken", (req, res) => {
   }
   res.render( 'janken', display );
 });
+
+app.get("/rollDice", (req, res) => {
+  const diceResults = [];
+  const rollCount = parseInt(req.query.rollCount, 10) || 1; // クエリパラメータから数を取得（デフォルト1） 
+  const faces = parseInt(req.query.faces, 10) || 6; // クエリパラメータから以下略（デフォルトは6）
+  let total = 0;
+
+  for (let i = 0; i < rollCount; i++) {
+    const roll = Math.floor(Math.random() * 100);
+ 
+  }
+
+  res.render('dice', { diceResults: diceResults, faces: faces , rollCount: rollCount , total: total});
+});
+
+
+app.get("/sushida", (req, res) => {
+  // CSVを読み込む関数
+  function loadCSV() {
+      const filePath = path.join(__dirname, 'tango.csv');  // CSVファイルのパスを指定
+      const csvData = fs.readFileSync(filePath, 'utf8');   // 同期的にCSVデータを読み込む
+      const rows = csvData.split('\n');                    // 改行で行を分割
+
+      // 2次元配列に変換
+      const data = rows.map(row => row.split(','));
+      return data;
+  }
+
+  const wordList = loadCSV();
+  const randomIndex = Math.floor(Math.random() * wordList.length);  // ランダムな行を選ぶ
+  const kanjiWord = wordList[randomIndex][1];        // 2列目の漢字
+  const romajiWord = wordList[randomIndex][2];       // 3列目のローマ字
+
+  // kanjiWordとromajiWordをEJSに渡す
+  res.render("sushida", { kanjiWord: kanjiWord, romajiWord: romajiWord });
+});
+
 
 app.listen(8080, () => console.log("Example app listening on port 8080!"));
