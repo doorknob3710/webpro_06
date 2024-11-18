@@ -193,6 +193,7 @@ app.get("/sushida", (req, res) => {
   let message;
   let sucess = Number( req.query.sucess)||0;
   let total = Number( req.query.total )||0;
+  console.log( {sucess, total});
 
 
   if (userInput === romajiWord) {
@@ -200,11 +201,13 @@ app.get("/sushida", (req, res) => {
       const randomIndex = Math.floor(Math.random() * wordList.length);  
       kanjiWord = wordList[randomIndex][0];        
       romajiWord = wordList[randomIndex][1];
+      sucess += 1;
+      total += 1;
   } else {
       message = `不正解です。あなたの入力: "${userInput}"`;
+      total += 1;
   }
-  
-  res.render("sushida", { kanjiWord, romajiWord, message});
+  res.render("sushida", { kanjiWord, romajiWord, message,sucess: sucess,total: total});
 });
 
 app.listen(8080, () => console.log("Example app listening on port 8080!"));
