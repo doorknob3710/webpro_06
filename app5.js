@@ -1,6 +1,5 @@
-const express = require("express");
+const express = require("express"); 
 const app = express();
-
 
 app.set('view engine', 'ejs');
 app.use("/public", express.static(__dirname + "/public"));
@@ -71,13 +70,12 @@ app.get("/janken", (req, res) => {
 
 app.get("/rollDice", (req, res) => {
   const diceResults = [];
-  const rollCount = parseInt(req.query.rollCount, 10) || 1; // クエリパラメータから数を取得（デフォルト1） 
-  const faces = parseInt(req.query.faces, 10) || 6; // クエリパラメータから以下略（デフォルトは6）
+  const rollCount = parseInt(req.query.rollCount, 10) || 1;  
+  const faces = parseInt(req.query.faces, 10) || 6; 
   let total = 0;
 
   for (let i = 0; i < rollCount; i++) {
     const roll = Math.floor(Math.random() * 100);
- 
   }
 
   res.render('dice', { diceResults: diceResults, faces: faces , rollCount: rollCount , total: total});
@@ -85,25 +83,123 @@ app.get("/rollDice", (req, res) => {
 
 
 app.get("/sushida", (req, res) => {
-  // CSVを読み込む関数
-  function loadCSV() {
-      const filePath = path.join(__dirname, 'tango.csv');  // CSVファイルのパスを指定
-      const csvData = fs.readFileSync(filePath, 'utf8');   // 同期的にCSVデータを読み込む
-      const rows = csvData.split('\n');                    // 改行で行を分割
+  const wordList = [
+    ["寿司", "sushi"],
+    ["天ぷら", "tempura"],
+    ["刺身", "sashimi"],
+    ["そば", "soba"],
+    ["うどん", "udon"],
+    ["豆腐", "toufu"],
+    ["焼肉", "yakiniku"],
+    ["すき焼き", "sukiyaki"],
+    ["しゃぶしゃぶ", "syabusyabu"],
+    ["お好み焼き", "okonomiyaki"],
+    ["味噌汁", "misoshiru"],
+    ["たこ焼き", "takoyaki"],
+    ["おにぎり", "onigiri"],
+    ["納豆", "natto"],
+    ["餅", "mochi"],
+    ["焼き鳥", "yakitori"],
+    ["カレーライス", "kare-raisu"],
+    ["ハンバーガー", "hanba-ga-"],
+    ["サンドイッチ", "sandoicchi"],
+    ["ピザ", "piza"],
+    ["スパゲッティ", "supagetti"],
+    ["ラーメン", "ramenn"],
+    ["唐揚げ", "karaage"],
+    ["ぎょうざ", "gyoza"],
+    ["春巻き", "harumaki"],
+    ["茶碗蒸し", "chawanmushi"],
+    ["おでん", "odenn"],
+    ["かき氷", "kakigoori"],
+    ["プリン", "purinn"],
+    ["ケーキ", "ke-ki"],
+    ["パンケーキ", "panke-ki"],
+    ["ドーナツ", "do-natsu"],
+    ["チョコレート", "chokore-to"],
+    ["アイスクリーム", "aisukuri-mu"],
+    ["チーズ", "chi-zu"],
+    ["ステーキ", "sute-ki"],
+    ["ご飯", "gohann"],
+    ["鮭", "sake"],
+    ["海苔", "nori"],
+    ["天丼", "tendonn"],
+    ["親子丼", "oyakodonn"],
+    ["牛丼", "gyuudonn"],
+    ["豚丼", "butadonn"],
+    ["そぼろ丼", "soborodonn"],
+    ["野菜", "yasai"],
+    ["果物", "kudamono"],
+    ["バナナ", "banana"],
+    ["いちご", "ichigo"],
+    ["ぶどう", "budou"],
+    ["リンゴ", "ringo"],
+    ["みかん", "mikann"],
+    ["もも", "momo"],
+    ["メロン", "meronn"],
+    ["レモン", "remonn"],
+    ["パイナップル", "painappuru"],
+    ["きゅうり", "kyuuri"],
+    ["にんじん", "ninnjinn"],
+    ["たまねぎ", "tamanegi"],
+    ["じゃがいも", "jagaimo"],
+    ["トマト", "tomato"],
+    ["キャベツ", "kyabetsu"],
+    ["レタス", "retasu"],
+    ["ピーマン", "pi-mann"],
+    ["とうもろこし", "toumorokoshi"],
+    ["米", "kome"],
+    ["大豆", "daizu"],
+    ["小麦", "komugi"],
+    ["魚", "sakana"],
+    ["肉", "niku"],
+    ["鶏肉", "toriniku"],
+    ["牛肉", "gyuuniku"],
+    ["豚肉", "butaniku"],
+    ["羊肉", "younniku"],
+    ["鹿肉", "shikaniku"],
+    ["卵", "tamago"],
+    ["牛乳", "gyuunyuu"],
+    ["バター", "bata-"],
+    ["生クリーム", "namakuri-mu"],
+    ["豆乳", "tounyuu"],
+    ["紅茶", "koucha"],
+    ["コーヒー", "ko-hi-"],
+    ["ジュース", "ju-su"],
+    ["お茶", "ocha"],
+    ["水", "mizu"],
+    ["炭酸水", "tansansui"],
+    ["ビール", "bi-ru"],
+    ["ワイン", "wainn"],
+    ["シャンパン", "syanpann"],
+    ["ウイスキー", "uisuki-"],
+    ["焼酎", "syoucyuu"],
+    ["日本酒", "nihonsyu"],
+    ["カクテル", "kakuteru"],
+    ["砂糖", "satou"],
+    ["塩", "shio"],
+    ["醤油", "syouyu"],
+    ["みりん", "mirinn"],
+    ["味噌", "miso"],
+    ["ケチャップ", "kecyappu"],
+    ["マヨネーズ", "mayone-zu"],
+    ["ワサビ", "wasabi"]
+  ];
+  const userInput = req.query.userInput?.trim();  
+  let kanjiWord = req.query.kanjiWord;  
+  let romajiWord = req.query.romajiWord; 
+  let message;
 
-      // 2次元配列に変換
-      const data = rows.map(row => row.split(','));
-      return data;
+  if (userInput === romajiWord) {
+      message = "正解！";
+      const randomIndex = Math.floor(Math.random() * wordList.length);  
+      kanjiWord = wordList[randomIndex][0];        
+      romajiWord = wordList[randomIndex][1];
+  } else {
+      message = `不正解です。あなたの入力: "${userInput}"`;
   }
-
-  const wordList = loadCSV();
-  const randomIndex = Math.floor(Math.random() * wordList.length);  // ランダムな行を選ぶ
-  const kanjiWord = wordList[randomIndex][1];        // 2列目の漢字
-  const romajiWord = wordList[randomIndex][2];       // 3列目のローマ字
-
-  // kanjiWordとromajiWordをEJSに渡す
-  res.render("sushida", { kanjiWord: kanjiWord, romajiWord: romajiWord });
+  
+  res.render("sushida", { kanjiWord, romajiWord, message});
 });
-
 
 app.listen(8080, () => console.log("Example app listening on port 8080!"));
