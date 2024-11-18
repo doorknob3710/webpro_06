@@ -142,7 +142,7 @@ app.get("/sushida", (req, res) => {
     ["レモン", "remonn"],
     ["パイナップル", "painappuru"],
     ["きゅうり", "kyuuri"],
-    ["にんじん", "ninnjinn"],
+    ["にんじん", "ninjinn"],
     ["たまねぎ", "tamanegi"],
     ["じゃがいも", "jagaimo"],
     ["トマト", "tomato"],
@@ -195,18 +195,23 @@ app.get("/sushida", (req, res) => {
   let total = Number( req.query.total )||0;
   console.log( {sucess, total});
 
-
-  if (userInput === romajiWord) {
-      message = "正解！";
-      const randomIndex = Math.floor(Math.random() * wordList.length);  
-      kanjiWord = wordList[randomIndex][0];        
-      romajiWord = wordList[randomIndex][1];
-      sucess += 1;
-      total += 1;
+  if (userInput === undefined) {
+    message = "頑張ってください";
+    const randomIndex = Math.floor(Math.random() * wordList.length);  
+    kanjiWord = wordList[randomIndex][0];        
+    romajiWord = wordList[randomIndex][1];
+  }else if (userInput === romajiWord) {
+    message = "正解！";
+    const randomIndex = Math.floor(Math.random() * wordList.length);  
+    kanjiWord = wordList[randomIndex][0];        
+    romajiWord = wordList[randomIndex][1];
+    sucess += 1;
+    total += 1;
   } else {
-      message = `不正解です。あなたの入力: "${userInput}"`;
-      total += 1;
+    message = `不正解です。あなたの入力: "${userInput}"`;
+    total += 1;
   }
+  console.log( {sucess, total,});
   res.render("sushida", { kanjiWord, romajiWord, message,sucess: sucess,total: total});
 });
 
