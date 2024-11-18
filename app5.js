@@ -68,14 +68,16 @@ app.get("/janken", (req, res) => {
   res.render( 'janken', display );
 });
 
-app.get("/rollDice", (req, res) => {
+app.get("/dice", (req, res) => {
   const diceResults = [];
   const rollCount = parseInt(req.query.rollCount, 10) || 1;  
   const faces = parseInt(req.query.faces, 10) || 6; 
   let total = 0;
 
   for (let i = 0; i < rollCount; i++) {
-    const roll = Math.floor(Math.random() * 100);
+    const roll = Math.floor(Math.random() * faces) + 1;
+    diceResults.push({ rollNumber: i + 1, result: roll });
+    total += roll;
   }
 
   res.render('dice', { diceResults: diceResults, faces: faces , rollCount: rollCount , total: total});
@@ -189,6 +191,9 @@ app.get("/sushida", (req, res) => {
   let kanjiWord = req.query.kanjiWord;  
   let romajiWord = req.query.romajiWord; 
   let message;
+  let sucess = Number( req.query.sucess)||0;
+  let total = Number( req.query.total )||0;
+
 
   if (userInput === romajiWord) {
       message = "正解！";
