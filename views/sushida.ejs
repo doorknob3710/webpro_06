@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>寿司打ゲーム</title>
+</head>
+<body>
+    <h1>寿司打ゲーム</h1>
+    <p>入力してください: <span id="kanjiWord"><%= kanjiWord %></span></p>
+    <p><%= message %></p>
+    
+
+
+    <form action="/sushida" method="get">
+        <input type="password" name="userInput" placeholder="単語を入力">
+        <button type="submit">判定する</button>
+        <input type="hidden" name="kanjiWord" value="<%= kanjiWord %>">
+        <input type="hidden" name="romajiWord" value="<%= romajiWord %>">
+    </form>
+</body>
+</html>

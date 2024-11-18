@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>サイコロ振り</title>
+</head>
+<body>
+    <h2>サイコロ振りの結果:</h2>
+    <form action="/rollDice" method="get">
+        <label for="faces">サイコロの面の数:</label>
+        <input type="number" id="faces" name="faces" value="<%= faces %>" min="1">
+        <label for="rollCount">サイコロの数:</label>
+        <input type="number" id="rollCount" name="rollCount" value="<%= rollCount %>" min="1">
+        <button type="submit">サイコロを振る</button>
+    </form>
+    <ul>
+        <% diceResults.forEach(function(result) { %>
+            <li><%= result.rollNumber %>回目: <%= result.result %> (1〜<%= faces %>面)</li>    
+        <% }); %>
+        <h3>合計値: <%= total %></h3> 
+    </ul>
+    <p>デバッグ用: <%= JSON.stringify(diceResults) %></p>
+</body>
+</html>
