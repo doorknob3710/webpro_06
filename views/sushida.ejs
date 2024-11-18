@@ -7,6 +7,8 @@
 </head>
 <body>
     <h1>寿司打ゲーム</h1>
+    <p>現在<%= total %>回中<%= sucess %>回正しいタイピングをしています．</p>
+    <p>入力してください: <span id="romajiWord"><%= romajiWord%></span></p>
     <p>入力してください: <span id="kanjiWord"><%= kanjiWord %></span></p>
     <p><%= message %></p>
     
@@ -17,6 +19,8 @@
         <button type="submit">判定する</button>
         <input type="hidden" name="kanjiWord" value="<%= kanjiWord %>">
         <input type="hidden" name="romajiWord" value="<%= romajiWord %>">
+        <input type="hidden" name="sucess" value="<%= sucess %>">
+        <input type="hidden" name="total" value="<%= total %>">
     </form>
 </body>
 </html>
