@@ -39,16 +39,12 @@ document.addEventListener("DOMContentLoaded", () => {
         total = data.total;
     };
 
-    // 送信ボタンをクリックしたときの処理
+
     submitButton.addEventListener("click", (event) => {
-        event.preventDefault();  // フォーム送信を防ぐ
+        event.preventDefault();  
         const userInput = userInputElement.value.trim();
         sendUserInput(userInput);
     });
 
-    // 初期表示
-    sendUserInput(); // 初回リクエスト
+    sendUserInput(); 
 });
-
-
-  
