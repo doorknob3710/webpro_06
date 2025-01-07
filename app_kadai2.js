@@ -127,15 +127,17 @@ app.post("/sushida2/api", (req, res) => {
 
     if (!userInput) {
         message = "頑張ってください！";
+        currentWord = getRandomWord();
     } else if (userInput === currentWord.romaji) {
         message = "正解！";
         newSuccess += 1;
+        currentWord = getRandomWord();
     } else {
         message = `不正解です。あなたの入力: "${userInput}"`;
     }
 
     newTotal += 1;
-    currentWord = getRandomWord();
+
 
     res.json({
         kanjiWord: currentWord.kanji,

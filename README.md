@@ -69,7 +69,7 @@ end1["合計値と個々値の出力"]
 start --> input --> buttonpush --> end1　--> input
 ```
 
-### 寿司打サイコロのフォローチャート
+### 寿司打のフォローチャート
 ```mermaid
 flowchart TD;
 
@@ -103,5 +103,22 @@ sequenceDiagram
   BBSクライアント ->> BBSサーバ:Read(読み込み)
   BBSサーバ ->> BBSクライアント:掲示データ
   BBSクライアント ->> BBSサーバ:Check(新規チェック)
-  BBSサーバ ->> BBSクライアント:全書き込み数
+  BBSサーバ ->> BBSクライアント:全書き込み数 
+```
+```mermaid
+
+sequenceDiagram
+    participant Browser as Webブラウザ
+    participant WebServer as Webサーバ
+    participant Client as クライアント
+    participant ClientServer as クライアントサーバ
+
+    Browser->>WebServer: ゲームページをリクエスト
+    WebServer->>Browser: HTML, JSリクエスト
+    Browser->>Client:起動
+    Client->>ClientServer: ユーザー入力（POSTリクエスト）
+    ClientServer->>Client: 判定結果、次の単語を返す
+    Client->>Browser: 判定結果、次の単語を表示
+
+
 ```
